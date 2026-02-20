@@ -2,7 +2,6 @@ use std::fs;
 use std::path::Path;
 
 #[test]
-#[ignore]
 fn generate_pngs() {
     let versions = [
         ("version1", bc_lifehash::Version::Version1),
