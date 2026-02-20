@@ -5,6 +5,7 @@ edition = "2024"
 description = "LifeHash visual hashing algorithm"
 authors = ["Blockchain Commons"]
 repository = "https://github.com/BlockchainCommons/bc-lifehash-rust"
+readme = "README.md"
 license = "BSD-2-Clause-Patent"
 documentation = "https://docs.rs/bc-lifehash"
 keywords = ["lifehash", "visual-hash"]

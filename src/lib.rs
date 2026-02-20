@@ -1,3 +1,50 @@
+#![doc(html_root_url = "https://docs.rs/bc-lifehash/0.1.0")]
+#![warn(rust_2018_idioms)]
+
+//! # Introduction
+//!
+//! `bc-lifehash` is a method of hash visualization based on Conway's Game of
+//! Life that creates beautiful icons that are deterministic, yet distinct and
+//! unique given the input data.
+//!
+//! The basic concept is to take a SHA-256 hash of the input data (which can be
+//! any data including another hash) and then use the 256-bit digest as a 16x16
+//! pixel "seed" for running the cellular automata known as Conway's Game of
+//! Life. After the pattern becomes stable (or begins repeating) the resulting
+//! history is used to compile a grayscale image of all the states from the
+//! first to last generation. Using Game of Life provides visual structure to
+//! the resulting image, even though it was seeded with entropy. Some bits of
+//! the initial hash are then used to deterministically apply symmetry and color
+//! to the icon to add beauty and quick recognizability.
+//!
+//! This is the first-party Rust implementation. It produces byte-identical
+//! output to the [C++ reference implementation](https://github.com/BlockchainCommons/bc-lifehash).
+//!
+//! # Getting Started
+//!
+//! ```toml
+//! [dependencies]
+//! bc-lifehash = "0.1.0"
+//! ```
+//!
+//! # Versions
+//!
+//! Five LifeHash versions are supported via the [`Version`] enum:
+//!
+//! - **Version1** / **Version2** — 16x16 grid, up to 150 generations.
+//! - **Detailed** — 32x32 grid, up to 300 generations, richer color gradients.
+//! - **Fiducial** — 32x32, designed for use as fiducial markers.
+//! - **GrayscaleFiducial** — Same as Fiducial but rendered in grayscale.
+//!
+//! # Example
+//!
+//! ```rust
+//! let image = bc_lifehash::make_from_utf8("Hello", bc_lifehash::Version::Version2, 1, false);
+//! assert_eq!(image.width, 32);
+//! assert_eq!(image.height, 32);
+//! // image.colors contains RGB bytes (width * height * 3)
+//! ```
+
 mod bit_enumerator;
 mod cell_grid;
 mod change_grid;
