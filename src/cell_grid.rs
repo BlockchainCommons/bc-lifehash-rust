@@ -1,6 +1,8 @@
-use crate::bit_enumerator::{BitAggregator, BitEnumerator};
-use crate::change_grid::ChangeGrid;
-use crate::grid::Grid;
+use crate::{
+    bit_enumerator::{BitAggregator, BitEnumerator},
+    change_grid::ChangeGrid,
+    grid::Grid,
+};
 
 pub struct CellGrid {
     pub grid: Grid<bool>,
@@ -8,13 +10,14 @@ pub struct CellGrid {
 
 impl CellGrid {
     pub fn new(width: usize, height: usize) -> Self {
-        Self {
-            grid: Grid::new(width, height),
-        }
+        Self { grid: Grid::new(width, height) }
     }
 
     #[inline]
-    fn is_alive_in_next_generation(current_alive: bool, neighbors_count: usize) -> bool {
+    fn is_alive_in_next_generation(
+        current_alive: bool,
+        neighbors_count: usize,
+    ) -> bool {
         if current_alive {
             neighbors_count == 2 || neighbors_count == 3
         } else {
@@ -69,7 +72,10 @@ impl CellGrid {
                 let current_alive = self.grid.get_value(x, y);
                 if current_change_grid.grid.get_value(x, y) {
                     let neighbors_count = self.count_neighbors(x, y);
-                    let next_alive = Self::is_alive_in_next_generation(current_alive, neighbors_count);
+                    let next_alive = Self::is_alive_in_next_generation(
+                        current_alive,
+                        neighbors_count,
+                    );
                     if next_alive {
                         next_cell_grid.grid.set_value(true, x, y);
                     }

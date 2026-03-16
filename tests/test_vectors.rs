@@ -35,32 +35,53 @@ fn test_all_vectors() {
 
         let image = if tv.input_type == "hex" {
             if tv.input.is_empty() {
-                bc_lifehash::make_from_data(&[], version, tv.module_size, tv.has_alpha)
+                bc_lifehash::make_from_data(
+                    &[],
+                    version,
+                    tv.module_size,
+                    tv.has_alpha,
+                )
             } else {
                 let data = hex::decode(&tv.input).unwrap();
-                bc_lifehash::make_from_data(&data, version, tv.module_size, tv.has_alpha)
+                bc_lifehash::make_from_data(
+                    &data,
+                    version,
+                    tv.module_size,
+                    tv.has_alpha,
+                )
             }
         } else {
-            bc_lifehash::make_from_utf8(&tv.input, version, tv.module_size, tv.has_alpha)
+            bc_lifehash::make_from_utf8(
+                &tv.input,
+                version,
+                tv.module_size,
+                tv.has_alpha,
+            )
         };
 
         assert_eq!(
             image.width, tv.width,
-            "Vector {i}: width mismatch for input={:?} version={}", tv.input, tv.version
+            "Vector {i}: width mismatch for input={:?} version={}",
+            tv.input, tv.version
         );
         assert_eq!(
             image.height, tv.height,
-            "Vector {i}: height mismatch for input={:?} version={}", tv.input, tv.version
+            "Vector {i}: height mismatch for input={:?} version={}",
+            tv.input, tv.version
         );
         assert_eq!(
             image.colors.len(),
             tv.colors.len(),
-            "Vector {i}: colors length mismatch for input={:?} version={}", tv.input, tv.version
+            "Vector {i}: colors length mismatch for input={:?} version={}",
+            tv.input,
+            tv.version
         );
 
         if image.colors != tv.colors {
             // Find first mismatch
-            for (j, (got, expected)) in image.colors.iter().zip(tv.colors.iter()).enumerate() {
+            for (j, (got, expected)) in
+                image.colors.iter().zip(tv.colors.iter()).enumerate()
+            {
                 if got != expected {
                     let pixel = j / if tv.has_alpha { 4 } else { 3 };
                     let component = j % if tv.has_alpha { 4 } else { 3 };

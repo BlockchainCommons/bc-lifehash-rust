@@ -15,18 +15,14 @@ impl<T: Clone + Default> Grid<T> {
     }
 
     #[inline]
-    fn offset(&self, x: usize, y: usize) -> usize {
-        y * self.width + x
-    }
+    fn offset(&self, x: usize, y: usize) -> usize { y * self.width + x }
 
     #[inline]
     fn circular_index(index: i32, modulus: i32) -> usize {
         ((index % modulus + modulus) % modulus) as usize
     }
 
-    pub fn set_all(&mut self, value: T) {
-        self.storage.fill(value);
-    }
+    pub fn set_all(&mut self, value: T) { self.storage.fill(value); }
 
     #[inline]
     pub fn set_value(&mut self, value: T, x: usize, y: usize) {
@@ -48,11 +44,18 @@ impl<T: Clone + Default> Grid<T> {
         }
     }
 
-    pub fn for_neighborhood<F: FnMut(i32, i32, usize, usize)>(&self, px: usize, py: usize, mut f: F) {
+    pub fn for_neighborhood<F: FnMut(i32, i32, usize, usize)>(
+        &self,
+        px: usize,
+        py: usize,
+        mut f: F,
+    ) {
         for oy in -1..=1_i32 {
             for ox in -1..=1_i32 {
-                let nx = Self::circular_index(ox + px as i32, self.width as i32);
-                let ny = Self::circular_index(oy + py as i32, self.height as i32);
+                let nx =
+                    Self::circular_index(ox + px as i32, self.width as i32);
+                let ny =
+                    Self::circular_index(oy + py as i32, self.height as i32);
                 f(ox, oy, nx, ny);
             }
         }

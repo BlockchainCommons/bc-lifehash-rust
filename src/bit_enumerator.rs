@@ -5,13 +5,7 @@ pub struct BitEnumerator {
 }
 
 impl BitEnumerator {
-    pub fn new(data: Vec<u8>) -> Self {
-        Self {
-            data,
-            index: 0,
-            mask: 0x80,
-        }
-    }
+    pub fn new(data: Vec<u8>) -> Self { Self { data, index: 0, mask: 0x80 } }
 
     pub fn has_next(&self) -> bool {
         self.mask != 0 || self.index != self.data.len() - 1
@@ -67,9 +61,7 @@ impl BitEnumerator {
         value
     }
 
-    pub fn next_frac(&mut self) -> f64 {
-        self.next_uint16() as f64 / 65535.0
-    }
+    pub fn next_frac(&mut self) -> f64 { self.next_uint16() as f64 / 65535.0 }
 
     pub fn for_all<F: FnMut(bool)>(&mut self, mut f: F) {
         while self.has_next() {
@@ -84,12 +76,7 @@ pub struct BitAggregator {
 }
 
 impl BitAggregator {
-    pub fn new() -> Self {
-        Self {
-            data: Vec::new(),
-            bit_mask: 0,
-        }
-    }
+    pub fn new() -> Self { Self { data: Vec::new(), bit_mask: 0 } }
 
     pub fn append(&mut self, bit: bool) {
         if self.bit_mask == 0 {
@@ -105,7 +92,5 @@ impl BitAggregator {
         self.bit_mask >>= 1;
     }
 
-    pub fn data(&self) -> Vec<u8> {
-        self.data.clone()
-    }
+    pub fn data(&self) -> Vec<u8> { self.data.clone() }
 }

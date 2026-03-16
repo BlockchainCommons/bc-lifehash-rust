@@ -2,9 +2,7 @@ use crate::color::{Color, modulo};
 
 pub type ColorFunc = Box<dyn Fn(f64) -> Color>;
 
-pub fn reverse(c: ColorFunc) -> ColorFunc {
-    Box::new(move |t| c(1.0 - t))
-}
+pub fn reverse(c: ColorFunc) -> ColorFunc { Box::new(move |t| c(1.0 - t)) }
 
 pub fn blend2(color1: Color, color2: Color) -> ColorFunc {
     Box::new(move |t| color1.lerp_to(&color2, t))

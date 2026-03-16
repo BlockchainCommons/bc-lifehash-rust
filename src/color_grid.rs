@@ -1,8 +1,7 @@
-use crate::color::Color;
-use crate::color_func::ColorFunc;
-use crate::frac_grid::FracGrid;
-use crate::grid::Grid;
-use crate::patterns::Pattern;
+use crate::{
+    color::Color, color_func::ColorFunc, frac_grid::FracGrid, grid::Grid,
+    patterns::Pattern,
+};
 
 struct Transform {
     transpose: bool,
@@ -15,7 +14,11 @@ pub struct ColorGrid {
 }
 
 impl ColorGrid {
-    pub fn new(frac_grid: &FracGrid, gradient: &ColorFunc, pattern: Pattern) -> Self {
+    pub fn new(
+        frac_grid: &FracGrid,
+        gradient: &ColorFunc,
+        pattern: Pattern,
+    ) -> Self {
         let multiplier = if pattern == Pattern::Fiducial { 1 } else { 2 };
         let target_width = frac_grid.grid.width * multiplier;
         let target_height = frac_grid.grid.height * multiplier;
@@ -26,20 +29,54 @@ impl ColorGrid {
 
         let transforms: Vec<Transform> = match pattern {
             Pattern::Snowflake => vec![
-                Transform { transpose: false, reflect_x: false, reflect_y: false },
-                Transform { transpose: false, reflect_x: true, reflect_y: false },
-                Transform { transpose: false, reflect_x: false, reflect_y: true },
-                Transform { transpose: false, reflect_x: true, reflect_y: true },
+                Transform {
+                    transpose: false,
+                    reflect_x: false,
+                    reflect_y: false,
+                },
+                Transform {
+                    transpose: false,
+                    reflect_x: true,
+                    reflect_y: false,
+                },
+                Transform {
+                    transpose: false,
+                    reflect_x: false,
+                    reflect_y: true,
+                },
+                Transform {
+                    transpose: false,
+                    reflect_x: true,
+                    reflect_y: true,
+                },
             ],
             Pattern::Pinwheel => vec![
-                Transform { transpose: false, reflect_x: false, reflect_y: false },
-                Transform { transpose: true, reflect_x: true, reflect_y: false },
-                Transform { transpose: true, reflect_x: false, reflect_y: true },
-                Transform { transpose: false, reflect_x: true, reflect_y: true },
+                Transform {
+                    transpose: false,
+                    reflect_x: false,
+                    reflect_y: false,
+                },
+                Transform {
+                    transpose: true,
+                    reflect_x: true,
+                    reflect_y: false,
+                },
+                Transform {
+                    transpose: true,
+                    reflect_x: false,
+                    reflect_y: true,
+                },
+                Transform {
+                    transpose: false,
+                    reflect_x: true,
+                    reflect_y: true,
+                },
             ],
-            Pattern::Fiducial => vec![
-                Transform { transpose: false, reflect_x: false, reflect_y: false },
-            ],
+            Pattern::Fiducial => vec![Transform {
+                transpose: false,
+                reflect_x: false,
+                reflect_y: false,
+            }],
         };
 
         let frac_width = frac_grid.grid.width;

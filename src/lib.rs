@@ -39,7 +39,12 @@
 //! # Example
 //!
 //! ```rust
-//! let image = bc_lifehash::make_from_utf8("Hello", bc_lifehash::Version::Version2, 1, false);
+//! let image = bc_lifehash::make_from_utf8(
+//!     "Hello",
+//!     bc_lifehash::Version::Version2,
+//!     1,
+//!     false,
+//! );
 //! assert_eq!(image.width, 32);
 //! assert_eq!(image.height, 32);
 //! // image.colors contains RGB bytes (width * height * 3)
@@ -59,17 +64,15 @@ mod patterns;
 
 use std::collections::BTreeSet;
 
-use sha2::{Digest, Sha256};
-
 use bit_enumerator::BitEnumerator;
 use cell_grid::CellGrid;
 use change_grid::ChangeGrid;
-use color::clamped;
-use color::lerp_from;
+use color::{clamped, lerp_from};
 use color_grid::ColorGrid;
 use frac_grid::FracGrid;
 use gradients::select_gradient;
 use patterns::select_pattern;
+use sha2::{Digest, Sha256};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Version {
@@ -108,18 +111,20 @@ fn make_image(
 
     let mut result_colors = vec![0u8; scaled_capacity];
 
-    // Match C++ loop order: outer loop uses scaled_width, inner uses scaled_height
-    // (they're swapped relative to the variable names, but since the image is always
-    // square this doesn't matter in practice)
+    // Match C++ loop order: outer loop uses scaled_width, inner uses
+    // scaled_height (they're swapped relative to the variable names, but
+    // since the image is always square this doesn't matter in practice)
     for target_y in 0..scaled_width {
         for target_x in 0..scaled_height {
             let source_x = target_x / module_size;
             let source_y = target_y / module_size;
             let source_offset = (source_y * width + source_x) * 3;
 
-            let target_offset = (target_y * scaled_width + target_x) * result_components;
+            let target_offset =
+                (target_y * scaled_width + target_x) * result_components;
 
-            result_colors[target_offset] = (clamped(float_colors[source_offset]) * 255.0) as u8;
+            result_colors[target_offset] =
+                (clamped(float_colors[source_offset]) * 255.0) as u8;
             result_colors[target_offset + 1] =
                 (clamped(float_colors[source_offset + 1]) * 255.0) as u8;
             result_colors[target_offset + 2] =
@@ -166,7 +171,9 @@ pub fn make_from_digest(
 
     let (length, max_generations): (usize, usize) = match version {
         Version::Version1 | Version::Version2 => (16, 150),
-        Version::Detailed | Version::Fiducial | Version::GrayscaleFiducial => (32, 300),
+        Version::Detailed | Version::Fiducial | Version::GrayscaleFiducial => {
+            (32, 300)
+        }
     };
 
     let mut current_cell_grid = CellGrid::new(length, length);
@@ -225,7 +232,8 @@ pub fn make_from_digest(
     let mut frac_grid = FracGrid::new(length, length);
     for (i, h) in history.iter().enumerate() {
         current_cell_grid.set_data(h);
-        let frac = clamped(lerp_from(0.0, history.len() as f64, (i + 1) as f64));
+        let frac =
+            clamped(lerp_from(0.0, history.len() as f64, (i + 1) as f64));
         frac_grid.overlay(&current_cell_grid, frac);
     }
 

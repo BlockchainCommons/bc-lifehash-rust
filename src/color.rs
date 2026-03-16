@@ -6,18 +6,15 @@ pub struct Color {
 }
 
 impl Default for Color {
-    fn default() -> Self {
-        Self::BLACK
-    }
+    fn default() -> Self { Self::BLACK }
 }
 
 // Match C++ numeric helpers exactly.
-// C++ uses fmodf (32-bit), sqrtf (32-bit), powf (32-bit) for specific operations.
+// C++ uses fmodf (32-bit), sqrtf (32-bit), powf (32-bit) for specific
+// operations.
 
 #[inline]
-pub fn clamped(n: f64) -> f64 {
-    n.clamp(0.0, 1.0)
-}
+pub fn clamped(n: f64) -> f64 { n.clamp(0.0, 1.0) }
 
 /// C++ uses fmodf (f32 precision) even though arguments are f64.
 #[inline]
@@ -28,9 +25,7 @@ pub fn modulo(dividend: f64, divisor: f64) -> f64 {
 }
 
 #[inline]
-pub fn lerp_to(to_a: f64, to_b: f64, t: f64) -> f64 {
-    t * (to_b - to_a) + to_a
-}
+pub fn lerp_to(to_a: f64, to_b: f64, t: f64) -> f64 { t * (to_b - to_a) + to_a }
 
 #[inline]
 pub fn lerp_from(from_a: f64, from_b: f64, t: f64) -> f64 {
@@ -58,9 +53,7 @@ impl Color {
     #[allow(dead_code)]
     pub const YELLOW: Color = Color { r: 1.0, g: 1.0, b: 0.0 };
 
-    pub fn new(r: f64, g: f64, b: f64) -> Self {
-        Self { r, g, b }
-    }
+    pub fn new(r: f64, g: f64, b: f64) -> Self { Self { r, g, b } }
 
     pub fn from_uint8_values(r: u8, g: u8, b: u8) -> Self {
         Self {
@@ -78,13 +71,9 @@ impl Color {
         Color::new(red, green, blue)
     }
 
-    pub fn lighten(&self, t: f64) -> Color {
-        self.lerp_to(&Color::WHITE, t)
-    }
+    pub fn lighten(&self, t: f64) -> Color { self.lerp_to(&Color::WHITE, t) }
 
-    pub fn darken(&self, t: f64) -> Color {
-        self.lerp_to(&Color::BLACK, t)
-    }
+    pub fn darken(&self, t: f64) -> Color { self.lerp_to(&Color::BLACK, t) }
 
     pub fn burn(&self, t: f64) -> Color {
         let f = (1.0 - t).max(1.0e-7);

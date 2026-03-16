@@ -1,5 +1,4 @@
-use crate::cell_grid::CellGrid;
-use crate::grid::Grid;
+use crate::{cell_grid::CellGrid, grid::Grid};
 
 pub struct FracGrid {
     pub grid: Grid<f64>,
@@ -7,9 +6,7 @@ pub struct FracGrid {
 
 impl FracGrid {
     pub fn new(width: usize, height: usize) -> Self {
-        Self {
-            grid: Grid::new(width, height),
-        }
+        Self { grid: Grid::new(width, height) }
     }
 
     pub fn overlay(&mut self, cell_grid: &CellGrid, frac: f64) {

@@ -1,12 +1,12 @@
-use crate::Version;
-use crate::bit_enumerator::BitEnumerator;
-use crate::color::{Color, lerp, modulo};
-use crate::color_func::{ColorFunc, blend, blend2, reverse};
-use crate::hsb_color::HSBColor;
+use crate::{
+    Version,
+    bit_enumerator::BitEnumerator,
+    color::{Color, lerp, modulo},
+    color_func::{ColorFunc, blend, blend2, reverse},
+    hsb_color::HSBColor,
+};
 
-fn grayscale() -> ColorFunc {
-    blend2(Color::BLACK, Color::WHITE)
-}
+fn grayscale() -> ColorFunc { blend2(Color::BLACK, Color::WHITE) }
 
 fn select_grayscale(entropy: &mut BitEnumerator) -> ColorFunc {
     if entropy.next() {
@@ -16,9 +16,7 @@ fn select_grayscale(entropy: &mut BitEnumerator) -> ColorFunc {
     }
 }
 
-fn make_hue(t: f64) -> Color {
-    HSBColor::from_hue(t).color()
-}
+fn make_hue(t: f64) -> Color { HSBColor::from_hue(t).color() }
 
 fn spectrum() -> ColorFunc {
     blend(vec![
@@ -61,7 +59,10 @@ fn adjust_for_luminance(color: &Color, contrast_color: &Color) -> Color {
     }
 }
 
-fn monochromatic(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFunc {
+fn monochromatic(
+    entropy: &mut BitEnumerator,
+    hue_generator: &ColorFunc,
+) -> ColorFunc {
     let hue = entropy.next_frac();
     let is_tint = entropy.next();
     let is_reversed = entropy.next();
@@ -84,7 +85,11 @@ fn monochromatic(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> Colo
     let neutral_color_2 = neutral_color.lerp_to(&key_color, neutral_advance);
 
     let gradient = blend2(key_color_2, neutral_color_2);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
 fn monochromatic_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
@@ -97,10 +102,17 @@ fn monochromatic_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
     let key_color = adjust_for_luminance(&spec(hue), &contrast_color);
 
     let gradient = blend(vec![key_color, contrast_color, key_color]);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
-fn complementary(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFunc {
+fn complementary(
+    entropy: &mut BitEnumerator,
+    hue_generator: &ColorFunc,
+) -> ColorFunc {
     let spectrum1 = entropy.next_frac();
     let spectrum2 = modulo(spectrum1 + 0.5, 1.0);
     let lighter_advance = entropy.next_frac() * 0.3;
@@ -123,7 +135,11 @@ fn complementary(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> Colo
     let adjusted_darker = darker_color.darken(darker_advance);
 
     let gradient = blend2(adjusted_darker, adjusted_lighter);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
 fn complementary_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
@@ -139,17 +155,25 @@ fn complementary_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
     let color2 = spec(spectrum2);
 
     let bias_color = if neutral_color_bias { color1 } else { color2 };
-    let biased_neutral_color = neutral_color.lerp_to(&bias_color, 0.2).burn(0.1);
+    let biased_neutral_color =
+        neutral_color.lerp_to(&bias_color, 0.2).burn(0.1);
 
     let gradient = blend(vec![
         adjust_for_luminance(&color1, &biased_neutral_color),
         biased_neutral_color,
         adjust_for_luminance(&color2, &biased_neutral_color),
     ]);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
-fn triadic(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFunc {
+fn triadic(
+    entropy: &mut BitEnumerator,
+    hue_generator: &ColorFunc,
+) -> ColorFunc {
     let spectrum1 = entropy.next_frac();
     let spectrum2 = modulo(spectrum1 + 1.0 / 3.0, 1.0);
     let spectrum3 = modulo(spectrum1 + 2.0 / 3.0, 1.0);
@@ -172,7 +196,11 @@ fn triadic(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFunc 
     let adjusted_darker = darker_color.darken(darker_advance);
 
     let gradient = blend(vec![adjusted_lighter, middle_color, adjusted_darker]);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
 fn triadic_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
@@ -205,10 +233,17 @@ fn triadic_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
     colors.insert(neutral_insert_index, neutral_color);
 
     let gradient = blend(colors);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
-fn analogous(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFunc {
+fn analogous(
+    entropy: &mut BitEnumerator,
+    hue_generator: &ColorFunc,
+) -> ColorFunc {
     let spectrum1 = entropy.next_frac();
     let spectrum2 = modulo(spectrum1 + 1.0 / 12.0, 1.0);
     let spectrum3 = modulo(spectrum1 + 2.0 / 12.0, 1.0);
@@ -233,8 +268,17 @@ fn analogous(entropy: &mut BitEnumerator, hue_generator: &ColorFunc) -> ColorFun
     let adjusted_light = light_color.lighten(advance / 2.0);
     let adjusted_lightest = lightest_color.lighten(advance);
 
-    let gradient = blend(vec![adjusted_darkest, adjusted_dark, adjusted_light, adjusted_lightest]);
-    if is_reversed { reverse(gradient) } else { gradient }
+    let gradient = blend(vec![
+        adjusted_darkest,
+        adjusted_dark,
+        adjusted_light,
+        adjusted_lightest,
+    ]);
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
 fn analogous_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
@@ -267,10 +311,17 @@ fn analogous_fiducial(entropy: &mut BitEnumerator) -> ColorFunc {
     colors.insert(neutral_insert_index, neutral_color);
 
     let gradient = blend(colors);
-    if is_reversed { reverse(gradient) } else { gradient }
+    if is_reversed {
+        reverse(gradient)
+    } else {
+        gradient
+    }
 }
 
-pub fn select_gradient(entropy: &mut BitEnumerator, version: Version) -> ColorFunc {
+pub fn select_gradient(
+    entropy: &mut BitEnumerator,
+    version: Version,
+) -> ColorFunc {
     if version == Version::GrayscaleFiducial {
         return select_grayscale(entropy);
     }
