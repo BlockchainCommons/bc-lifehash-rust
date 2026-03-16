@@ -66,11 +66,14 @@ let image = bc_lifehash::make_from_digest(&digest, bc_lifehash::Version::Fiducia
 
 ## Version History
 
-- **0.1.0, February 20, 2026**
-  - Initial release.
+- **0.1.0, March 16, 2026**
+  - Initial release of bc-lifehash crate.
+  - LifeHash visual hashing algorithm based on Conway's Game of Life.
+  - Supports five versions: Version1, Version2, Detailed, Fiducial, GrayscaleFiducial.
+  - Deterministic SHA-256-seeded cellular automata with symmetry and color transforms.
+  - Configurable module size and optional alpha channel output.
+  - Test vectors and PNG generation tests.
   - Byte-identical output to the C++ reference implementation.
-  - All five LifeHash versions supported.
-  - Validated against 35 test vectors.
 
 ## Status - Community Review
 
